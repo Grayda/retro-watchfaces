@@ -8,12 +8,15 @@
             <circle cx="50%" cy="50%" fill="white" r="50%" />
         </mask>
 
+        <!-- Masks out the lines for the Dot Matrix section -->
         <mask id="linesMask">
             <!-- Make everything fully opaque -->
             <rect width="100%" height="100%" fill="white" />
             <!-- Then mask out the section at the top-->
             <rect width="50%" height="50%" x="25%" fill="black" />
         </mask>
+
+        <!-- And the same for the square variant -->
         <mask id="linesMaskSquare">
             <!-- Make everything fully opaque -->
             <rect width="100%" height="100%" fill="white" />
@@ -29,28 +32,205 @@
         <!-- Path for the Dot Matrix With Stereo Sound text to wrap around -->
         <path id="linesPath" d="M 57 180 a 320 360 180 0 1 525 0" />
 
+        <filter id="motherboard-blur" x="0" y="0">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+        </filter>
+
+        <!-- Add a drop shadow for the screen, which is inset -->
         <filter id="screen-drop-shadow">
             <feDropShadow dx="0" dy="0" stdDeviation="15" flood-opacity="40%" />
         </filter>
 
+        <!-- Add a drop shadow to all the buttons -->
         <filter id="button-drop-shadow">
             <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="50%" />
         </filter>
+
+        <!-- Makes an inner shadow for the bezel-->
+        <filter id="bezelDropShadow">
+            <feFlood flood-color="black" />
+            <feComposite operator="out" in2="SourceGraphic" />
+            <feGaussianBlur stdDeviation="2" />
+            <feComposite operator="atop" in2="SourceGraphic" />
+        </filter>
     </defs>
     <style>
+
+        /* The next two rules make it easier to switch between face types */
+        #square-face {
+            visibility: hidden;
+        }
+
+        #circular-face {
+            visibility: visible;
+        }
+
+        /* These apply to all variants */
         :root {
             /* The screen colour */
             --screen: #81922c;
-            /* The main colour */
-            --case: #e0d6d2;
-            /* The frame around the screen */
-            --bezel: #8b8593;
-            /* The button colours */
-            --buttons: #972558;
             /* The first line at the top */
             --top-line-1: #972558;
             /* The second line at the top */
             --top-line-2: #1d1858;
+            /* The dot where the battery indicator is */
+            --battery-indicator-colour: black;
+            /* The colour of both "BATTERY" and the "DOT MATRIX" text */
+            --text-colour: white;
+        }
+
+        /* Define the Play It Loud colours */
+        .grey {
+            /* The main colour */
+            --case: #e0d6d2;
+            /* The frame around the screen */
+            --bezel: #8b8593;
+            /* The colour of the D-Pad */
+            --dpad: #464646;
+            /* The A and B button colours */
+            --buttons: #972558;
+            /* The start and select button colours */
+            --start-select-buttons: #8b8593;
+        }
+
+        .yellow {
+            /* The main colour */
+            --case: #d8cd18;
+            /* The frame around the screen */
+            --bezel: #464646;
+            /* The colour of the D-Pad */
+            --dpad: #464646;
+            /* The A and B button colours */
+            --buttons: #464646;
+            /* The start and select button colours */
+            --start-select-buttons: #464646;
+        }
+
+        .red {
+            /* The main colour */
+            --case: #e23040;
+            /* The frame around the screen */
+            --bezel: #464646;
+            /* The colour of the D-Pad */
+            --dpad: #464646;
+            /* The A and B button colours */
+            --buttons: #464646;
+            /* The start and select button colours */
+            --start-select-buttons: #464646;
+        }
+
+        .green {
+            /* The main colour */
+            --case: #227b5b;
+            /* The frame around the screen */
+            --bezel: #292a2c;
+            /* The colour of the D-Pad */
+            --dpad: #292a2c;
+            /* The A and B button colours */
+            --buttons: #292a2c;
+            /* The start and select button colours */
+            --start-select-buttons: #292a2c;
+        }
+
+        .black {
+            /* The main colour */
+            --case: #282a29;
+            /* The frame around the screen */
+            --bezel: #464646;
+            /* The colour of the D-Pad */
+            --dpad: #464646;
+            /* The A and B button colours */
+            --buttons: #464646;
+            /* The start and select button colours */
+            --start-select-buttons: #464646;
+        }
+
+        .blue {
+            /* The main colour */
+            --case: #3e5c9a;
+            /* The frame around the screen */
+            --bezel: #464646;
+            /* The colour of the D-Pad */
+            --dpad: #464646;
+            /* The A and B button colours */
+            --buttons: #464646;
+            /* The start and select button colours */
+            --start-select-buttons: #464646;
+        }
+
+        .white {
+            /* The main colour */
+            --case: #f2f0f3;
+            /* The frame around the screen */
+            --bezel: #292a2c;
+            /* The colour of the D-Pad */
+            --dpad: #292a2c;
+            /* The A and B button colours */
+            --buttons: #292a2c;
+            /* The start and select button colours */
+            --start-select-buttons: #292a2c;
+        }
+
+        .transparent {
+            /* The main colour */
+            --case: rgba(0, 0, 0, 0.25);
+            /* The frame around the screen */
+            --bezel: #292a2c;
+            /* The colour of the D-Pad */
+            --dpad: #292a2c;
+            /* The A and B button colours */
+            --buttons: #292a2c;
+            /* The start and select button colours */
+            --start-select-buttons: #292a2c;
+        }
+
+        .pink {
+            /* The main colour */
+            --case: #fd9dad;
+            /* The frame around the screen */
+            --bezel: #292a2c;
+            /* The colour of the D-Pad */
+            --dpad: #464646;
+            /* The A and B button colours */
+            --buttons: #464646;
+            /* The start and select button colours */
+            --start-select-buttons: #464646;
+        }
+
+        .silver {
+            /* The main colour */
+            --case: #adaba9;
+            /* The frame around the screen */
+            --bezel: #9a9a9a;
+            /* The colour of the D-Pad */
+            --dpad: #292a2c;
+            /* The A and B button colours */
+            --buttons: #292a2c;
+            /* The start and select button colours */
+            --start-select-buttons: #292a2c;
+        }
+
+        .always-on {
+            /* The main colour */
+            --case: transparent;
+            /* The frame around the screen */
+            --bezel: transparent;
+            /* The colour of the D-Pad */
+            --dpad: #ffffff;
+            /* The A and B button colours */
+            --buttons: #ffffff;
+            /* The start and select button colours */
+            --start-select-buttons: #ffffff;
+            /* The screen colour */
+            --screen: transparent;
+            /* The first line at the top */
+            --top-line-1: transparent;
+            /* The second line at the top */
+            --top-line-2: transparent;
+            /* The dot where the battery indicator is */
+            --battery-indicator-colour: transparent;
+            /* The colour of both "BATTERY" and the "DOT MATRIX" text */
+            --text-colour: transparent;        
         }
 
         .dmss-font {
@@ -58,13 +238,70 @@
         }
     </style>
 
+    <!-- Variants: black, blue, green, grey, pink, red, silver, transparent, white, yellow -->
+    <g id="circular-face" mask="url(#circularBoundary)" class="always-on">
+        <!-- Make the main circle-->
+        <circle id="body" r="50%" height="100%" cx="50%" cy="50%" fill="transparent" />
+        <!-- Add the screen colour. If uncommenting this next line, remove the \ in the var() -->
+        <!-- <rect height="100%" width="100%" style="fill: var(-\-screen)" x="0" y="0" visibility="visible" /> -->
 
-    <g id="square-face" visibility="hidden">
-        <!-- Make the bezel -->
-         <rect x="3.125%" y="3.125%" width="93.75%" height="65.75%" fill="transparent" style="stroke: var(--bezel)" stroke-width="6.25%" />
-         <!-- Make the bottom part of the case -->
+        <path d="M 595 200 A 1 1 0 0 0 45 441 L 594 441 C 620 380 620 330 610 260 Z"
+            style="stroke: var(--bezel); stroke-width: 40" fill="transparent" filter="url(#bezelDropShadow)" />
+        <image href="motherboard.png" x="0" style="y: 72%" width="100%" filter="url(#motherboard-blur)" />
         <!-- Now we add the bottom part of the case-->
-        <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" /> 
+        <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" id="case" />
+
+        
+        <!-- The "Dot Matrix With Stereo Sound" lines and text -->
+        <g id="dmss">
+            <g id="dmss-lines" mask="url(#linesMask)">
+                <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
+                    d="M 45 180 a 320 340 180 0 1 550 0" id="dmss-line-1" />
+                <path style="stroke: var(--top-line-2); fill: none" stroke-width="1%"
+                    d="M 57 180 a 320 360 180 0 1 525 0" id="dmss-line-2" />
+            </g>
+            <text style="fill: var(--text-colour)" text-anchor="middle" class="dmss-font" id="dmss-text">
+                <textPath font-size="1.25em" href="#linesPath" startOffset="50%" class="dmss-text">
+                    DOT MATRIX WITH STEREO SOUND
+                </textPath>
+            </text>
+        </g>
+
+        <!-- Now we add the battery indicator and curved text -->
+        <g id="battery-indicator">
+            <circle style="fill: var(--battery-indicator-colour)" r="1.5%" cx="3.125%" cy="50%" id="battery-circle" />
+            <text style="fill: var(--text-colour)" font-size="0.55em" class="dmss-font" text-anchor="middle" id="battery-text">
+                <textPath href="#batteryTextCurve" startOffset="50%">
+                    BATTERY
+                </textPath>
+            </text>
+        </g>
+
+        <g id="buttons" filter="url(#button-drop-shadow)">
+            <path style="stroke: black; fill: var(--dpad); stroke-width: 0.5%"
+                d="m 160 485 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" id="dpad" />
+            <g id="a-b-buttons">
+                <circle cx="79%" cy="80%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
+                    id="a-button" />
+                <circle cx="68%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
+                    id="b-button" />
+            </g>
+
+            <g id="start-select-buttons">
+                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="18%" y="100%" ry="1%"
+                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="start-button" />
+                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="8%" y="97%" ry="1%"
+                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="select-button" />
+            </g>
+        </g>
+    </g>
+
+    <g id="square-face" class="grey">
+        <!-- Make the bezel -->
+        <rect x="3.125%" y="3.125%" width="93.75%" height="65.75%" fill="transparent" style="stroke: var(--bezel)"
+            stroke-width="6.25%" />
+        <!-- Now we add the bottom part of the case-->
+        <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" />
 
         <!-- The "Dot Matrix With Stereo Sound" lines and text -->
         <g id="dmss">
@@ -73,7 +310,7 @@
                 <rect x="7.5%" y="20" width="85%" height="1%" style="fill: var(--top-line-2)" />
             </g>
             <text fill="white" text-anchor="middle" class="dmss-font" x="50%" y="24">
-                    DOT MATRIX WITH STEREO SOUND
+                DOT MATRIX WITH STEREO SOUND
             </text>
         </g>
 
@@ -88,9 +325,9 @@
         </g>
 
         <g id="buttons" filter="url(#button-drop-shadow)">
-            <g id="dpad">
-                <rect width="5%" height="15%" fill="black" x="10%" y="80%" rx="1%" />
-                <rect width="15%" height="5%" fill="black" x="5%" y="85%" rx="1%" />
+            <g id="dpad" stroke="black" stroke-width="0.5%">
+                <path style="stroke: black; fill: var(--dpad)"
+                    d="m 70 515 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" />
             </g>
             <g id="a-b-buttons">
                 <circle cx="89%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%" />
@@ -98,71 +335,12 @@
             </g>
 
             <g id="start-select-buttons">
-                <rect width="8%" height="2.5%" style="fill: var(--bezel)" x="14%" y="105%" ry="1%"
+                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="14%" y="105%" ry="1%"
                     transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
-                <rect width="8%" height="2.5%" style="fill: var(--bezel)" x="4%" y="102%" ry="1%"
-                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
-            </g>
-        </g>
-    </g>
-
-    <g id="circular-face" mask="url(#circularBoundary)" visibility="visible">
-        <!-- Make the main circle-->
-        <circle id="body" r="50%" height="100%" cx="50%" cy="50%" fill="transparent" />
-        <!-- Add the screen colour. If uncommenting this next line, remove the \ in the var() -->
-        <!-- <rect height="100%" width="100%" style="fill: var(-\-screen)" x="0" y="0" visibility="visible" /> -->
-
-        <!-- Next, add the bezel. This is a path so we can add a drop shadow -->
-        <path style="stroke: var(--bezel)" fill="transparent" stroke-width="40"
-            d="M 340, 320 m -320, 0 a 280,280 0 1,0 600,0 a 280,280 0 1,0 -600,0 m -20 120 l 640 0" mask="url(#bezelMask)"
-            filter="url(#screen-drop-shadow)" />
-
-        <!-- Now we add the bottom part of the case-->
-        <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" />
-
-        <!-- The "Dot Matrix With Stereo Sound" lines and text -->
-        <g id="dmss">
-            <g id="dmss-lines" mask="url(#linesMask)">
-                <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
-                    d="M 45 180 a 320 340 180 0 1 550 0" />
-                <path style="stroke: var(--top-line-2); fill: none" stroke-width="1%"
-                    d="M 57 180 a 320 360 180 0 1 525 0" />
-            </g>
-            <text fill="white" text-anchor="middle" class="dmss-font">
-                <textPath font-size="1.25em" href="#linesPath" startOffset="50%">
-                    DOT MATRIX WITH STEREO SOUND
-                </textPath>
-            </text>
-        </g>
-
-        <!-- Now we add the battery indicator and curved text -->
-        <g id="battery-indicator">
-            <circle fill="black" r="1.5%" cx="3.125%" cy="50%" />
-            <text fill="white" font-size="0.55em" class="dmss-font" text-anchor="middle">
-                <textPath href="#batteryTextCurve" startOffset="50%">
-                    BATTERY
-                </textPath>
-            </text>
-        </g>
-
-        <g id="buttons" filter="url(#button-drop-shadow)">
-            <g id="dpad">
-                <rect width="5%" height="15%" fill="black" x="25%" y="75%" rx="1%" />
-                <rect width="15%" height="5%" fill="black" x="20%" y="80%" rx="1%" />
-            </g>
-            <g id="a-b-buttons">
-                <circle cx="79%" cy="80%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%" />
-                <circle cx="68%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%" />
-            </g>
-
-            <g id="start-select-buttons">
-                <rect width="8%" height="2.5%" style="fill: var(--bezel)" x="18%" y="100%" ry="1%"
-                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
-                <rect width="8%" height="2.5%" style="fill: var(--bezel)" x="8%" y="97%" ry="1%"
+                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="4%" y="102%" ry="1%"
                     transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
             </g>
         </g>
     </g>
-
 
 </svg>
