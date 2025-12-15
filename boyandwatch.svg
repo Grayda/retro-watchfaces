@@ -56,6 +56,7 @@
         </filter>
     </defs>
     <style>
+        /* Set up some visibility modifiers, so we can define what parts show up on which style of watchface */
         .round {
             .square {
                 visibility: hidden;
@@ -107,8 +108,10 @@
             --battery-indicator-colour: black;
             /* The colour of both "BATTERY" and the "DOT MATRIX" text */
             --text-colour: white;
+            /* A secondary text colour, mostly used on the Game Boy Light text */
             --secondary-text-colour: #29ffad;
 
+            /* The font used for everything */
             font-family: "Futura PT";
 
             /* Define the Play It Loud colours */
@@ -136,7 +139,9 @@
                 --buttons: #972558;
                 /* The start and select button colours */
                 --start-select-buttons: #8b8593;
-                --text-colour: #0d3186;
+                /* The "Game Boy [pocket]" text is in a different colour */
+                --text-colour: var(--top-line-2);
+                --secondary-text-colour: white;
             }
 
             .yellow {
@@ -332,7 +337,7 @@
         always-on
 
      -->
-    <g class="dmg grey round">
+    <g class="gbp grey round">
 
         <!-- This just groups the elements together to make the code easier to read -->
         <g id="round" mask="url(#circularBoundary)" class="round">
@@ -461,8 +466,8 @@
                 <g id="pocket-rectangle">
                     <rect id="pocket-text-rectangle" x="41%" y="67.25%" style="fill: var(--text-colour)" width="7.5%"
                         height="3.25%" />
-                    <text font-size="1.4em" x="41%"
-                        style="font-weight: lighter; fill: var(--text-colour); filter: invert(1)" y="70%">wrist</text>
+                    <text font-size="1.4em" x="40.75%"
+                        style="font-weight: lighter; fill: var(--secondary-text-colour); font-style: italic;" y="70%">wrist</text>
                 </g>
                 <text x="10%" y="70.25%" style="fill: var(--text-colour)" font-size="1.6em">BOY AND
                     WATCH</text>
