@@ -32,6 +32,7 @@
         <!-- Path for the Dot Matrix With Stereo Sound text to wrap around -->
         <path id="linesPath" d="M 57 180 a 320 360 180 0 1 525 0" />
 
+        <!-- Filter that blurs the motherboard picture in the transparent version -->
         <filter id="motherboard-blur" x="0" y="0">
             <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
         </filter>
@@ -55,292 +56,428 @@
         </filter>
     </defs>
     <style>
-
-        /* The next two rules make it easier to switch between face types */
-        #square-face {
-            visibility: hidden;
+        .round {
+            .square {
+                visibility: hidden;
+            }
         }
 
-        #circular-face {
-            visibility: visible;
+        .square {
+            .round {
+                visibility: hidden;
+            }
         }
 
-        /* These apply to all variants */
+        /* This only applies to elements on the original DMG-01 */
+        .dmg {
+
+            .gbp,
+            .gbl {
+                visibility: hidden;
+            }
+        }
+
+        /* This only applies to elements on the Game Boy Pocket */
+        .gbp {
+
+            .dmg,
+            .gbl {
+                visibility: hidden;
+            }
+        }
+
+        /* This only applies to elements on the Game Boy Pocket */
+        .gbl {
+
+            .dmg,
+            .gbp {
+                visibility: hidden;
+            }
+        }
+
+        /* Define the colours available */
         :root {
             /* The screen colour */
             --screen: #81922c;
-            /* The first line at the top */
+            /* The first DMSS line at the top  */
             --top-line-1: #972558;
-            /* The second line at the top */
+            /* The second DMSS line at the top */
             --top-line-2: #1d1858;
             /* The dot where the battery indicator is */
             --battery-indicator-colour: black;
             /* The colour of both "BATTERY" and the "DOT MATRIX" text */
             --text-colour: white;
-        }
+            --secondary-text-colour: #29ffad;
 
-        /* Define the Play It Loud colours */
-        .grey {
-            /* The main colour */
-            --case: #e0d6d2;
-            /* The frame around the screen */
-            --bezel: #8b8593;
-            /* The colour of the D-Pad */
-            --dpad: #464646;
-            /* The A and B button colours */
-            --buttons: #972558;
-            /* The start and select button colours */
-            --start-select-buttons: #8b8593;
-        }
-
-        .yellow {
-            /* The main colour */
-            --case: #d8cd18;
-            /* The frame around the screen */
-            --bezel: #464646;
-            /* The colour of the D-Pad */
-            --dpad: #464646;
-            /* The A and B button colours */
-            --buttons: #464646;
-            /* The start and select button colours */
-            --start-select-buttons: #464646;
-        }
-
-        .red {
-            /* The main colour */
-            --case: #e23040;
-            /* The frame around the screen */
-            --bezel: #464646;
-            /* The colour of the D-Pad */
-            --dpad: #464646;
-            /* The A and B button colours */
-            --buttons: #464646;
-            /* The start and select button colours */
-            --start-select-buttons: #464646;
-        }
-
-        .green {
-            /* The main colour */
-            --case: #227b5b;
-            /* The frame around the screen */
-            --bezel: #292a2c;
-            /* The colour of the D-Pad */
-            --dpad: #292a2c;
-            /* The A and B button colours */
-            --buttons: #292a2c;
-            /* The start and select button colours */
-            --start-select-buttons: #292a2c;
-        }
-
-        .black {
-            /* The main colour */
-            --case: #282a29;
-            /* The frame around the screen */
-            --bezel: #464646;
-            /* The colour of the D-Pad */
-            --dpad: #464646;
-            /* The A and B button colours */
-            --buttons: #464646;
-            /* The start and select button colours */
-            --start-select-buttons: #464646;
-        }
-
-        .blue {
-            /* The main colour */
-            --case: #3e5c9a;
-            /* The frame around the screen */
-            --bezel: #464646;
-            /* The colour of the D-Pad */
-            --dpad: #464646;
-            /* The A and B button colours */
-            --buttons: #464646;
-            /* The start and select button colours */
-            --start-select-buttons: #464646;
-        }
-
-        .white {
-            /* The main colour */
-            --case: #f2f0f3;
-            /* The frame around the screen */
-            --bezel: #292a2c;
-            /* The colour of the D-Pad */
-            --dpad: #292a2c;
-            /* The A and B button colours */
-            --buttons: #292a2c;
-            /* The start and select button colours */
-            --start-select-buttons: #292a2c;
-        }
-
-        .transparent {
-            /* The main colour */
-            --case: rgba(0, 0, 0, 0.25);
-            /* The frame around the screen */
-            --bezel: #292a2c;
-            /* The colour of the D-Pad */
-            --dpad: #292a2c;
-            /* The A and B button colours */
-            --buttons: #292a2c;
-            /* The start and select button colours */
-            --start-select-buttons: #292a2c;
-        }
-
-        .pink {
-            /* The main colour */
-            --case: #fd9dad;
-            /* The frame around the screen */
-            --bezel: #292a2c;
-            /* The colour of the D-Pad */
-            --dpad: #464646;
-            /* The A and B button colours */
-            --buttons: #464646;
-            /* The start and select button colours */
-            --start-select-buttons: #464646;
-        }
-
-        .silver {
-            /* The main colour */
-            --case: #adaba9;
-            /* The frame around the screen */
-            --bezel: #9a9a9a;
-            /* The colour of the D-Pad */
-            --dpad: #292a2c;
-            /* The A and B button colours */
-            --buttons: #292a2c;
-            /* The start and select button colours */
-            --start-select-buttons: #292a2c;
-        }
-
-        .always-on {
-            /* The main colour */
-            --case: transparent;
-            /* The frame around the screen */
-            --bezel: transparent;
-            /* The colour of the D-Pad */
-            --dpad: #ffffff;
-            /* The A and B button colours */
-            --buttons: #ffffff;
-            /* The start and select button colours */
-            --start-select-buttons: #ffffff;
-            /* The screen colour */
-            --screen: transparent;
-            /* The first line at the top */
-            --top-line-1: transparent;
-            /* The second line at the top */
-            --top-line-2: transparent;
-            /* The dot where the battery indicator is */
-            --battery-indicator-colour: transparent;
-            /* The colour of both "BATTERY" and the "DOT MATRIX" text */
-            --text-colour: transparent;        
-        }
-
-        .dmss-font {
             font-family: "Futura PT";
+
+            /* Define the Play It Loud colours */
+            .grey {
+                /* The main colour */
+                --case: #e0d6d2;
+                /* The frame around the screen */
+                --bezel: #8b8593;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #972558;
+                /* The start and select button colours */
+                --start-select-buttons: #8b8593;
+            }
+
+            .grey .gbp {
+                /* The main colour */
+                --case: #e0d6d2;
+                /* The frame around the screen */
+                --bezel: #8b8593;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #972558;
+                /* The start and select button colours */
+                --start-select-buttons: #8b8593;
+                --text-colour: #0d3186;
+            }
+
+            .yellow {
+                /* The main colour */
+                --case: #d8cd18;
+                /* The frame around the screen */
+                --bezel: #464646;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+            }
+
+            .red {
+                /* The main colour */
+                --case: #e23040;
+                /* The frame around the screen */
+                --bezel: #464646;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+            }
+
+            .green {
+                /* The main colour */
+                --case: #227b5b;
+                /* The frame around the screen */
+                --bezel: #292a2c;
+                /* The colour of the D-Pad */
+                --dpad: #292a2c;
+                /* The A and B button colours */
+                --buttons: #292a2c;
+                /* The start and select button colours */
+                --start-select-buttons: #292a2c;
+            }
+
+            .black {
+                /* The main colour */
+                --case: #282a29;
+                /* The frame around the screen */
+                --bezel: #464646;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+            }
+
+            .blue {
+                /* The main colour */
+                --case: #3e5c9a;
+                /* The frame around the screen */
+                --bezel: #464646;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+            }
+
+            .white {
+                /* The main colour */
+                --case: #f2f0f3;
+                /* The frame around the screen */
+                --bezel: #292a2c;
+                /* The colour of the D-Pad */
+                --dpad: #292a2c;
+                /* The A and B button colours */
+                --buttons: #292a2c;
+                /* The start and select button colours */
+                --start-select-buttons: #292a2c;
+            }
+
+            .gold {
+                /* The main colour */
+                --case: #b09750;
+                /* The frame around the screen */
+                --bezel: #292a2c;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+            }
+
+            .silver {
+                /* The main colour */
+                --case: #c6c6c6;
+                /* The frame around the screen */
+                --bezel: #a4a4a4;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+                /* The colour of the text (mostly in the bezel) */
+                --text-colour: black;
+            }
+
+            .silver-black {
+                /* The main colour */
+                --case: #c6c6c6;
+                /* The frame around the screen */
+                --bezel: #292a2c;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+                /* The colour of the text (mostly in the bezel) */
+                --text-colour: #cccccc;
+            }
+
+            .transparent {
+                /* The main colour */
+                --case: rgba(0, 0, 0, 0.25);
+                /* The frame around the screen */
+                --bezel: #292a2c;
+                /* The colour of the D-Pad */
+                --dpad: #292a2c;
+                /* The A and B button colours */
+                --buttons: #292a2c;
+                /* The start and select button colours */
+                --start-select-buttons: #292a2c;
+            }
+
+            .pink {
+                /* The main colour */
+                --case: #fd9dad;
+                /* The frame around the screen */
+                --bezel: #292a2c;
+                /* The colour of the D-Pad */
+                --dpad: #464646;
+                /* The A and B button colours */
+                --buttons: #464646;
+                /* The start and select button colours */
+                --start-select-buttons: #464646;
+            }
+
+            .always-on {
+                /* The main colour */
+                --case: transparent;
+                /* The frame around the screen */
+                --bezel: transparent;
+                /* The colour of the D-Pad */
+                --dpad: rgba(255, 255, 255, 0.5);
+                /* The A and B button colours */
+                --buttons: rgba(255, 255, 255, 0.5);
+                /* The start and select button colours */
+                --start-select-buttons: rgba(255, 255, 255, 0.5);
+                /* The screen colour */
+                --screen: transparent;
+                /* The first line at the top */
+                --top-line-1: transparent;
+                /* The second line at the top */
+                --top-line-2: transparent;
+                /* The dot where the battery indicator is */
+                --battery-indicator-colour: transparent;
+                /* The colour of both "BATTERY" and the "DOT MATRIX" text */
+                --text-colour: transparent;
+            }
+
+            .pocket-text {
+                font-style: italic;
+            }
         }
     </style>
 
-    <!-- Variants: black, blue, green, grey, pink, red, silver, transparent, white, yellow -->
-    <g id="circular-face" mask="url(#circularBoundary)" class="always-on">
-        <!-- Make the main circle-->
-        <circle id="body" r="50%" height="100%" cx="50%" cy="50%" fill="transparent" />
-        <!-- Add the screen colour. If uncommenting this next line, remove the \ in the var() -->
-        <!-- <rect height="100%" width="100%" style="fill: var(-\-screen)" x="0" y="0" visibility="visible" /> -->
+    <!-- Variants: 
 
-        <path d="M 595 200 A 1 1 0 0 0 45 441 L 594 441 C 620 380 620 330 610 260 Z"
-            style="stroke: var(--bezel); stroke-width: 40" fill="transparent" filter="url(#bezelDropShadow)" />
-        <image href="motherboard.png" x="0" style="y: 72%" width="100%" filter="url(#motherboard-blur)" />
-        <!-- Now we add the bottom part of the case-->
-        <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" id="case" />
+        grey
+        yellow
+        red
+        green
+        black
+        blue
+        white
+        gold
+        silver
+        silver-black 
+        transparent
+        pink
+        always-on
 
-        
-        <!-- The "Dot Matrix With Stereo Sound" lines and text -->
-        <g id="dmss">
-            <g id="dmss-lines" mask="url(#linesMask)">
-                <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
-                    d="M 45 180 a 320 340 180 0 1 550 0" id="dmss-line-1" />
-                <path style="stroke: var(--top-line-2); fill: none" stroke-width="1%"
-                    d="M 57 180 a 320 360 180 0 1 525 0" id="dmss-line-2" />
+     -->
+    <g class="dmg grey round">
+
+        <!-- This just groups the elements together to make the code easier to read -->
+        <g id="round" mask="url(#circularBoundary)" class="round">
+            <!-- Make the main circle-->
+            <circle id="body" r="50%" height="100%" cx="50%" cy="50%" fill="transparent" />
+
+            <!-- Make a path for the inside of the circle -->
+            <path d="M 595 200 A 1 1 0 0 0 45 441 L 594 441 C 620 380 620 330 610 260 Z"
+                style="stroke: var(--bezel); stroke-width: 40" fill="transparent" filter="url(#bezelDropShadow)" />
+
+            <!-- Now we add the bottom part of the case-->
+            <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" id="case" />
+
+            <!-- Now we add the battery indicator and curved text -->
+            <g id="battery-indicator">
+                <circle style="fill: var(--battery-indicator-colour)" r="1.5%" cx="3.125%" cy="50%"
+                    id="battery-circle" />
+                <text style="fill: var(--text-colour)" font-size="0.55em" text-anchor="middle" id="battery-text">
+                    <textPath href="#batteryTextCurve" startOffset="50%" class="gbp">
+                        POWER
+                    </textPath>
+
+                    <textPath href="#batteryTextCurve" startOffset="50%" class="gbl">
+                        POWER
+                    </textPath>
+
+                    <textPath href="#batteryTextCurve" startOffset="50%" class="dmg">
+                        BATTERY
+                    </textPath>
+                </text>
             </g>
-            <text style="fill: var(--text-colour)" text-anchor="middle" class="dmss-font" id="dmss-text">
-                <textPath font-size="1.25em" href="#linesPath" startOffset="50%" class="dmss-text">
-                    DOT MATRIX WITH STEREO SOUND
-                </textPath>
-            </text>
+
+            <g id="buttons" filter="url(#button-drop-shadow)">
+                <path style="stroke: black; fill: var(--dpad); stroke-width: 0.5%"
+                    d="m 160 485 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" id="dpad" />
+                <g id="a-b-buttons">
+                    <circle cx="79%" cy="80%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
+                        id="a-button" />
+                    <circle cx="68%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
+                        id="b-button" />
+                </g>
+
+                <g id="start-select-buttons">
+                    <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="18%" y="100%" ry="1%"
+                        transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="start-button" />
+                    <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="8%" y="97%" ry="1%"
+                        transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="select-button" />
+                </g>
+            </g>
+            <g class="dmg">
+                <g id="admss-lines" style="mask: url(#linesMask) !important;">
+                    <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
+                        d="M 45 180 a 320 340 180 0 1 550 0" id="dmss-line-1" />
+                    <path style="stroke: var(--top-line-2); fill: none" stroke-width="1%"
+                        d="M 57 180 a 320 360 180 0 1 525 0" id="dmss-line-2" />
+                </g>
+                <text style="fill: var(--text-colour)" text-anchor="middle" id="dmss-text">
+                    <textPath font-size="1.25em" href="#linesPath" startOffset="50%">
+                        DOT MATRIX WITH STEREO SOUND
+                    </textPath>
+                </text>
+            </g>
         </g>
 
-        <!-- Now we add the battery indicator and curved text -->
-        <g id="battery-indicator">
-            <circle style="fill: var(--battery-indicator-colour)" r="1.5%" cx="3.125%" cy="50%" id="battery-circle" />
-            <text style="fill: var(--text-colour)" font-size="0.55em" class="dmss-font" text-anchor="middle" id="battery-text">
-                <textPath href="#batteryTextCurve" startOffset="50%">
-                    BATTERY
-                </textPath>
-            </text>
+        <g id="square" class="square">
+            <g id="square-face">
+                <!-- Make the bezel -->
+                <rect x="3.125%" y="3.125%" width="93.75%" height="65.75%" fill="transparent"
+                    style="stroke: var(--bezel)" stroke-width="6.25%" />
+                <!-- Now we add the bottom part of the case-->
+                <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" />
+
+                <!-- Now we add the battery indicator and curved text -->
+                <g id="battery-indicator">
+                    <circle style="fill: var(--battery-indicator-colour)" r="1.5%" cx="3.125%" cy="25%" />
+                    <text style="fill: var(--text-colour)" font-size="0.55em" text-anchor="middle"
+                        transform="translate(0, -160)">
+                        <textPath href="#batteryTextCurve" startOffset="50%" class="gbp">
+                            POWER
+                        </textPath>
+                        <textPath href="#batteryTextCurve" startOffset="50%" class="gbl">
+                            POWER
+                        </textPath>
+                        <textPath href="#batteryTextCurve" startOffset="50%" class="dmg">
+                            BATTERY
+                        </textPath>
+                    </text>
+                </g>
+
+                <g id="buttons" filter="url(#button-drop-shadow)">
+                    <g id="dpad" stroke="black" stroke-width="0.5%">
+                        <path style="stroke: black; fill: var(--dpad)"
+                            d="m 70 515 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" />
+                    </g>
+                    <g id="a-b-buttons">
+                        <circle cx="89%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black"
+                            stroke-width="0.5%" />
+                        <circle cx="78%" cy="90%" r="4%" style="fill: var(--buttons)" stroke="black"
+                            stroke-width="0.5%" />
+                    </g>
+
+                    <g id="start-select-buttons">
+                        <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="14%" y="105%"
+                            ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
+                        <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="4%" y="102%" ry="1%"
+                            transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
+                    </g>
+                </g>
+                <g class="dmg">
+                    <g id="dmss-lines" mask="url(#linesMaskSquare)">
+                        <rect x="7.5%" y="10" width="85%" height="1%" style="fill: var(--top-line-1)" />
+                        <rect x="7.5%" y="20" width="85%" height="1%" style="fill: var(--top-line-2)" />
+                    </g>
+                    <text style="fill: var(--text-colour)" text-anchor="middle" x="50%" y="24">
+                        DOT MATRIX WITH STEREO SOUND
+                    </text>
+                </g>
+            </g>
         </g>
 
-        <g id="buttons" filter="url(#button-drop-shadow)">
-            <path style="stroke: black; fill: var(--dpad); stroke-width: 0.5%"
-                d="m 160 485 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" id="dpad" />
-            <g id="a-b-buttons">
-                <circle cx="79%" cy="80%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
-                    id="a-button" />
-                <circle cx="68%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
-                    id="b-button" />
+
+        <g id="texts">
+
+            <!-- The "Game Boy Pocket" text -->
+            <g class="gbp">
+                <g id="pocket-rectangle">
+                    <rect id="pocket-text-rectangle" x="41%" y="67.25%" style="fill: var(--text-colour)" width="7.5%"
+                        height="3.25%" />
+                    <text font-size="1.4em" x="41%"
+                        style="font-weight: lighter; fill: var(--text-colour); filter: invert(1)" y="70%">wrist</text>
+                </g>
+                <text x="10%" y="70.25%" style="fill: var(--text-colour)" font-size="1.6em">BOY AND
+                    WATCH</text>
             </g>
 
-            <g id="start-select-buttons">
-                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="18%" y="100%" ry="1%"
-                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="start-button" />
-                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="8%" y="97%" ry="1%"
-                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="select-button" />
+            <!-- The "Game Boy Light" text -->
+            <g class="gbl">
+                <text x="10%" y="70%" style="fill: var(--text-colour); font-weight: 100" font-size="1.6em">BOY AND
+                    WATCH</text>
+                <text x="41%" y="70%" style="fill: var(--secondary-text-colour); font-weight: bolder"
+                    font-size="1.6em">LIGHT</text>
             </g>
         </g>
     </g>
 
-    <g id="square-face" class="grey">
-        <!-- Make the bezel -->
-        <rect x="3.125%" y="3.125%" width="93.75%" height="65.75%" fill="transparent" style="stroke: var(--bezel)"
-            stroke-width="6.25%" />
-        <!-- Now we add the bottom part of the case-->
-        <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" />
 
-        <!-- The "Dot Matrix With Stereo Sound" lines and text -->
-        <g id="dmss">
-            <g id="dmss-lines" mask="url(#linesMaskSquare)">
-                <rect x="7.5%" y="10" width="85%" height="1%" style="fill: var(--top-line-1)" />
-                <rect x="7.5%" y="20" width="85%" height="1%" style="fill: var(--top-line-2)" />
-            </g>
-            <text fill="white" text-anchor="middle" class="dmss-font" x="50%" y="24">
-                DOT MATRIX WITH STEREO SOUND
-            </text>
-        </g>
-
-        <!-- Now we add the battery indicator and curved text -->
-        <g id="battery-indicator">
-            <circle fill="black" r="1.5%" cx="3.125%" cy="25%" />
-            <text fill="white" font-size="0.55em" class="dmss-font" text-anchor="middle" transform="translate(0, -160)">
-                <textPath href="#batteryTextCurve" startOffset="50%">
-                    BATTERY
-                </textPath>
-            </text>
-        </g>
-
-        <g id="buttons" filter="url(#button-drop-shadow)">
-            <g id="dpad" stroke="black" stroke-width="0.5%">
-                <path style="stroke: black; fill: var(--dpad)"
-                    d="m 70 515 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" />
-            </g>
-            <g id="a-b-buttons">
-                <circle cx="89%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%" />
-                <circle cx="78%" cy="90%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%" />
-            </g>
-
-            <g id="start-select-buttons">
-                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="14%" y="105%" ry="1%"
-                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
-                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="4%" y="102%" ry="1%"
-                    transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
-            </g>
-        </g>
-    </g>
 
 </svg>
