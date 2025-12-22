@@ -1,5 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 640 640" width="640px" height="640px">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 640 640" width="640px"
+    height="640px">
     <defs>
+        <!-- Here, we set up some filters and masks to be used in the rest of the design -->
+
         <!-- This masks out the area outside of the circle -->
         <mask id="circularBoundary">
             <!-- Make everything fully transparent -->
@@ -8,8 +11,8 @@
             <circle cx="50%" cy="50%" fill="white" r="50%" />
         </mask>
 
-        <!-- Masks out the lines for the Dot Matrix section -->
-        <mask id="linesMask">
+        <!-- Masks out the lines for the Dot Matrix section in the round layout -->
+        <mask id="linesMaskRound">
             <!-- Make everything fully opaque -->
             <rect width="100%" height="100%" fill="white" />
             <!-- Then mask out the section at the top-->
@@ -24,15 +27,66 @@
             <rect width="40%" height="50%" x="30%" fill="black" />
         </mask>
 
-        <!-- Circle used to curve text around the battery indicator -->
+        <!-- Punch out a battery indicator hole for the round design -->
+        <mask id="batteryMaskRound">
+            <!-- Make everything fully opaque -->
+            <rect width="100%" height="100%" fill="white" class="hide-gba hide-gba-sp" />
+            <!-- Then mask out a circle for the indicator light -->
+            <circle fill="black" r="1.5%" cx="3.125%" cy="50%" class="hide-gba hide-gba-sp" />
+        </mask>
+
+        <!-- Punch out a battery indicator hole for the square design -->
+        <mask id="batteryMaskSquare">
+            <!-- Make everything fully opaque -->
+            <rect width="100%" height="100%" fill="white" class="hide-gba hide-gba-sp" />
+            <!-- Then mask out a circle for the indicator light -->
+            <circle fill="black" r="1.5%" cx="3.125%" cy="25%" class="hide-gba hide-gba-sp" />
+        </mask>
+
+        <!-- Punch out a battery indicator hole for the round GBA design -->
+        <mask id="gbaBatteryMaskRound">
+            <!-- Make everything fully opaque -->
+            <rect width="100%" height="100%" fill="white" />
+            <!-- Then mask out a circle for the indicator light -->
+            <circle fill="black" r="1.5%" cx="87%" cy="75%" />
+        </mask>
+
+        <!-- Punch out a battery indicator hole for the square GBA design -->
+        <mask id="gbaBatteryMaskSquare">
+            <!-- Make everything fully opaque -->
+            <rect width="100%" height="100%" fill="white" />
+            <!-- Then mask out a circle for the indicator light -->
+            <circle fill="black" r="1.5%" cx="95%" cy="75%" />
+        </mask>
+
+        <!-- Punch out a battery indicator hole for the round GBA design -->
+        <mask id="gbaSPBatteryMaskRound">
+            <!-- Make everything fully opaque -->
+            <rect width="100%" height="100%" fill="white" />
+
+            <!-- Then mask out two squares. One for charging, one for battery level -->
+            <rect width="5%" height="2%" x="90%" y="74%" fill="black" />
+            <rect width="5%" height="2%" x="90%" y="77%" fill="black" />
+        </mask>
+
+        <!-- Punch out a battery indicator hole for the square GBA design -->
+        <mask id="gbaSPBatteryMaskSquare">
+            <!-- Make everything fully opaque -->
+            <rect width="100%" height="100%" fill="white" />
+            <!-- Then mask out two squares. One for charging, one for battery level -->
+            <rect width="5%" height="2%" x="95%" y="74%" fill="black" />
+            <rect width="5%" height="2%" x="95%" y="77%" fill="black" />
+        </mask>
+
+        <!-- Circle used to curve text around the battery indicator in the round design -->
         <path id="batteryTextCurve" d="M 20, 280
         m -64, 0
         a 64,64 0 1,0 128,0" />
 
-        <!-- Path for the Dot Matrix With Stereo Sound text to wrap around -->
+        <!-- Path for the Dot Matrix With Stereo Sound text to wrap around in the round design -->
         <path id="linesPath" d="M 57 180 a 320 360 180 0 1 525 0" />
 
-        <!-- Filter that blurs the motherboard picture in the transparent version -->
+        <!-- Filter that blurs the motherboard picture (if used) in the transparent version -->
         <filter id="motherboard-blur" x="0" y="0">
             <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
         </filter>
@@ -55,430 +109,672 @@
             <feComposite operator="atop" in2="SourceGraphic" />
         </filter>
     </defs>
+
     <style>
-        /* Set up some visibility modifiers, so we can define what parts show up on which style of watchface */
+        /* Make sure you've got this font in your folder, otherwise it won't work. */
+        @font-face {
+            font-family: "GAMECUBEN DualSet";
+            src: url("fonts/GameCube.ttf") format("truetype");
+        }
+
+        /* Set up some visibility modifiers. .round only shows the elements for the round face, .square for the square */
         .round {
             .square {
-                visibility: hidden;
+                visibility: hidden !important;
             }
         }
 
         .square {
             .round {
-                visibility: hidden;
+                visibility: hidden !important;
             }
         }
 
-        /* This only applies to elements on the original DMG-01 */
-        .dmg {
-
-            .gbp,
-            .gbl {
-                visibility: hidden;
-            }
+        /* These are layout-specific modifiers. For example if you've got the design set to gb, it'll hide anything with .hide-gb and show the rest */
+        .gb .hide-gb,
+        .gbp .hide-gbp,
+        .gbl .hide-gbl,
+        .gbc .hide-gbc,
+        .gba .hide-gba,
+        .gba-sp .hide-gba-sp {
+            visibility: hidden;
         }
 
-        /* This only applies to elements on the Game Boy Pocket */
-        .gbp {
-
-            .dmg,
-            .gbl {
-                visibility: hidden;
-            }
-        }
-
-        /* This only applies to elements on the Game Boy Pocket */
-        .gbl {
-
-            .dmg,
-            .gbp {
-                visibility: hidden;
-            }
-        }
-
-        /* Define the colours available */
-        :root {
-            /* The screen colour */
-            --screen: #81922c;
-            /* The first DMSS line at the top  */
-            --top-line-1: #972558;
-            /* The second DMSS line at the top */
-            --top-line-2: #1d1858;
-            /* The dot where the battery indicator is */
-            --battery-indicator-colour: black;
-            /* The colour of both "BATTERY" and the "DOT MATRIX" text */
-            --text-colour: white;
-            /* A secondary text colour, mostly used on the Game Boy Light text */
-            --secondary-text-colour: #29ffad;
-
-            /* The font used for everything */
+        /* Next, we set up our fonts. Different layouts use different font combinations */
+        .bezel-text-1,
+        .bezel-text-2 {
             font-family: "Futura PT";
+            font-weight: bold;
+            font-style: italic;
+        }
 
-            /* Define the Play It Loud colours */
-            .grey {
-                /* The main colour */
-                --case: #e0d6d2;
-                /* The frame around the screen */
-                --bezel: #8b8593;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #972558;
-                /* The start and select button colours */
-                --start-select-buttons: #8b8593;
+        .bezel-text-3 {
+            font-family: "Arial";
+        }
+
+        .gbc .bezel-text-2 {
+            font-family: "Comic Sans MS";
+            font-style: normal;
+        }
+
+        .gb .bezel-text-1 {
+            font-style: normal;
+            font-weight: normal;
+        }
+
+        /* The GBA and SP have a border around the bezel text */
+        .gba,
+        .gba-sp {
+
+            .bezel-text-1,
+            .bezel-text-2,
+            .bezel-text-3 {
+                stroke: black;
+                stroke-width: 10px;
+                paint-order: stroke;
+                stroke-linejoin: round;
             }
 
-            .grey .gbp {
-                /* The main colour */
-                --case: #e0d6d2;
-                /* The frame around the screen */
-                --bezel: #8b8593;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #972558;
-                /* The start and select button colours */
-                --start-select-buttons: #8b8593;
-                /* The "Game Boy [pocket]" text is in a different colour */
-                --text-colour: var(--top-line-2);
-                --secondary-text-colour: white;
+            .bezel-text-2 {
+                font-family: "GAMECUBEN DualSet";
+                font-style: normal;
+                letter-spacing: -1px;
             }
 
-            .yellow {
-                /* The main colour */
-                --case: #d8cd18;
-                /* The frame around the screen */
-                --bezel: #464646;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
+            .bezel-text-3 {
+                stroke-width: 5px;
+            }
+        }
+
+        /* The GBA and GBA-SP don't have battery indicators in the usual spot (it's on the case) so we hide it and show a special indicator */
+        .round {
+            .gba {
+                #case {
+                    mask: url(#gbaBatteryMaskRound);
+                }
+
+                #bezel-round {
+                    mask: none !important;
+                }
             }
 
-            .red {
-                /* The main colour */
-                --case: #e23040;
-                /* The frame around the screen */
-                --bezel: #464646;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
+            .gba-sp {
+                #case {
+                    mask: url(#gbaSPBatteryMaskRound);
+                }
+
+                #bezel-round {
+                    mask: none !important;
+                }
+            }
+        }
+
+        .square {
+            .gba {
+                #case {
+                    mask: url(#gbaBatteryMaskSquare);
+                }
+
+                #bezel-square {
+                    mask: none !important;
+                }
             }
 
-            .green {
-                /* The main colour */
-                --case: #227b5b;
-                /* The frame around the screen */
-                --bezel: #292a2c;
-                /* The colour of the D-Pad */
-                --dpad: #292a2c;
-                /* The A and B button colours */
-                --buttons: #292a2c;
-                /* The start and select button colours */
-                --start-select-buttons: #292a2c;
+            .gba-sp {
+                #case {
+                    mask: url(#gbaSPBatteryMaskSquare);
+                }
+
+                #bezel-square {
+                    mask: none !important;
+                }
+            }
+        }
+
+        /* These are used to split the design up for an app like Watch Face Studio */
+        .bezel-only {
+
+            #case,
+            #buttons {
+                visibility: hidden;
+            }
+        }
+
+        .buttons-only {
+
+            #case,
+            #bezel-round,
+            #bezel-square,
+            .bezel-text-1,
+            .bezel-text-2,
+            .bezel-text-3 {
+                visibility: hidden;
+            }
+        }
+
+        /* Set up some base styles that apply to everything */
+        :root {
+            --berry: #bc1748;
+            --indigo: #5536d7;
+            --kiwi: #73c234;
+            --yellow: #d8cd18;
+            --teal: #007092;
+
+            --dark-grey: #464646;
+            --grey: #8b8593;
+            --light-grey: #e0d6d2;
+
+            --purple: #972658;
+            --dark-blue: #1d1858;
+
+            --silver: #c6c6c6;
+            --gold: #b09750;
+            --fluorescent: #29ffad;
+
+            #battery-indicator {
+                font-family: "Futura PT";
             }
 
-            .black {
-                /* The main colour */
-                --case: #282a29;
-                /* The frame around the screen */
-                --bezel: #464646;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
+            .gbl {
+                --secondary-text-colour: var(--fluorescent);
             }
 
-            .blue {
-                /* The main colour */
-                --case: #3e5c9a;
-                /* The frame around the screen */
-                --bezel: #464646;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
+            /* The frame around the screen */
+            --bezel: var(--dark-grey);
+            /* The colour of the D-Pad */
+            --d-pad: var(--dark-grey);
+            /* The A and B button colours */
+            --a-button: var(--dark-grey);
+            --b-button: var(--dark-grey);
+
+            /* The start and select and GBA-SP light button colours */
+            --start-select-buttons: var(--dark-grey);
+            --backlight-button: var(--start-select-buttons);
+
+            /* The "Dot Matrix with Stereo Sound" lines  */
+            --top-line-1: var(--purple);
+            --top-line-2: var(--dark-blue);
+
+            /* The main text colour */
+            --primary-text-colour: white;
+            /* The secondary text colour (e.g. in the Light text for the Game Boy Light */
+            --secondary-text-colour: white;
+            /* The tertiary text colour. Mostly used in the "[Pocket]" rectangle on the Game Boy Pocket */
+            --tertiary-text-colour: black;
+        }
+
+        /* DMG-01 grey / off white */
+        .grey {
+            --case: var(--light-grey);
+            --a-button: var(--purple);
+            --b-button: var(--purple);
+            --start-select-buttons: var(--grey);
+            --d-pad: var(--dark-grey);
+            --bezel: var(--grey);
+
+            /* The Game Boy Pocket has a different bezel */
+            .gbp {
+                --primary-text-colour: var(--dark-blue);
+                --secondary-text-colour: var(--dark-blue);
+                --tertiary-text-colour: white;
+            }
+        }
+
+        /* Red. Similar to Berry, but different enough to warrant its own */
+        .red {
+            --case: #e23040;
+        }
+
+        /* Use this with the transparent motherboard to make a green motherboard */
+        .green {
+            --case: #227b5b;
+        }
+
+        /* Lighter than black, darker than dark grey */
+        .black {
+            --case: #282a29;
+        }
+
+        /* Different from Teal */
+        .blue {
+            --case: #3e5c9a;
+        }
+
+        /* Off-white */
+        .white {
+            --case: #f2f0f3;
+        }
+
+        /* Best approximation of gold */
+        .gold {
+            --case: var(--gold);
+        }
+
+        /* There's three silver variants. The Pocket has a lighter bezel, and everything else has a darker bezel, but there's also a Pocket with a darker bezel */
+        .silver {
+            --case: var(--silver);
+            --bezel: var(--dark-grey);
+            --d-pad: var(--light-grey);
+            --start-select-buttons: var(--light-grey);
+            --a-button: var(--light-grey);
+            --b-button: var(--light-grey);
+            --primary-text-colour: white;
+            --secondary-text-colour: white;
+            --tertiary-text-colour: white;
+
+            .gbp {
+                --bezel: var(--light-grey);
+                --primary-text-colour: black;
+                --d-pad: var(--dark-grey);
+                --start-select-buttons: var(--dark-grey);
+                --a-button: var(--dark-grey);
+                --b-button: var(--dark-grey);
+                --secondary-text-colour: black;
+                --tertiary-text-colour: white;
             }
 
-            .white {
-                /* The main colour */
-                --case: #f2f0f3;
-                /* The frame around the screen */
-                --bezel: #292a2c;
-                /* The colour of the D-Pad */
-                --dpad: #292a2c;
-                /* The A and B button colours */
-                --buttons: #292a2c;
-                /* The start and select button colours */
-                --start-select-buttons: #292a2c;
+        }
+
+        .silver-black {
+            --case: var(--silver);
+            --bezel: var(--dark-grey);
+            --primary-text-colour: white;
+            --secondary-text-colour: white;
+            --tertiary-text-colour: black;
+        }
+
+        /* Useful for making a Fuchsia Game Boy Advance, or the pink Game Boy Pocket, or the Hello Kitty consoles */
+        .pink {
+            --case: #fd9dad;
+        }
+
+        /* The original Game Boy Color variants */
+        .berry {
+            --case: var(--berry);
+        }
+
+        .indigo {
+            --case: var(--indigo);
+        }
+
+
+        .kiwi {
+            --case: var(--kiwi);
+        }
+
+        /* Yellow. Used for the Pokemon layout too */
+        .yellow {
+            --case: #d8cd18;
+        }
+
+        .teal {
+            --case: var(--teal);
+        }
+
+        /* Can be used for the Daiei Hawk variant too */
+        .spice-orange {
+            --case: #e26d1e;
+        }
+
+        /* Pokemon is just yellow, but has different coloured buttons */
+        .pokemon {
+            --case: var(--yellow);
+            --a-button: var(--berry);
+            --b-button: var(--teal);
+            --d-pad: #3e5c9a;
+
+            /* The SP version of the Pokemon one (which just has Pikachu on it) has red buttons. We just Berry here because it's close enough */
+            .gba-sp {
+                --a-button: var(--berry);
+                --b-button: var(--berry);
+                --d-pad: var(--berry);
+                --start-select-buttons: var(--berry);
+                --backlight-button: var(--berry);
+            }
+        }
+
+        /* Same deal as the Pokemon one. It's silver, but with bright red buttons */
+        .ripcurl {
+            --case: var(--silver);
+            --a-button: #e23040;
+            --b-button: #e23040;
+            --d-pad: #e23040;
+            --start-select-buttons: #e23040;
+            --backlight-button: #e23040;
+        }
+
+        /* Same deal as Pokemon and Ripcurl */
+        .famicom {
+            --case: #f2f0f3;
+            --a-button: var(--berry);
+            --b-button: var(--berry);
+            --d-pad: var(--berry);
+            --start-select-buttons: var(--berry);
+            --backlight-button: var(--berry);
+        }
+
+        /* As Above */
+        .famicom-gold {
+            --case: var(--gold);
+            --bezel: #6b2730;
+            --a-button: var(--dark-grey);
+            --b-button: var(--dark-grey);
+            --d-pad: var(--dark-grey);
+            --start-select-buttons: var(--dark-grey);
+            --backlight-button: var(--dark-grey);
+
+            /* Technically only the GBA SP got a Famicom variant, so we make the others look nice */
+            .gba-sp {
+
+                .bezel-text-1,
+                .bezel-text-2,
+                .bezel-text-3 {
+                    stroke: var(--gold);
+                }
+            }
+        }
+
+        /* The case is semi-transparent, so you can put your own motherboard image behind it */
+        .transparent {
+            --case: rgba(0, 0, 0, 0.25);
+
+            /* The Game Boy Light had a transparent yellow version and a limited edition Famitsu version which is uncoloured */
+            .gbl {
+                --bezel: white;
+                --a-button: white;
+                --b-button: white;
+                --d-pad: white;
+                --start-select-buttons: white;
+
+                --primary-text-colour: var(--teal);
+                --secondary-text-colour: var(--teal);
+                --tertiary-text-colour: var(--teal);
+            }
+        }
+
+        /* Transparent yellow for the Game Boy Light */
+        .transparent-yellow {
+            --case: rgba(255, 255, 0, 0.25) !important;
+            --bezel: inherit;
+            --a-button: inherit;
+            --b-button: inherit;
+            --d-pad: inherit;
+            --start-select-buttons: inherit;
+            --primary-text-colour: inherit;
+            --secondary-text-colour: var(--fluorescent);
+        }
+
+        /* This just hides everything except the buttons and makes them white. This makes it easy to create an image for always-on displays (e.g. the Pixel Watch) */
+        .always-on {
+
+            #case,
+            #bezel-round,
+            #bezel-square,
+            #battery-indicator,
+            .bezel-text-1,
+            .bezel-text-2 {
+                visibility: hidden;
             }
 
-            .gold {
-                /* The main colour */
-                --case: #b09750;
-                /* The frame around the screen */
-                --bezel: #292a2c;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
-            }
+            --a-button: white;
+            --b-button: white;
+            --d-pad: white;
+            --start-select-buttons: white;
+            --backlight-button: white;
 
-            .silver {
-                /* The main colour */
-                --case: #c6c6c6;
-                /* The frame around the screen */
-                --bezel: #a4a4a4;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
-                /* The colour of the text (mostly in the bezel) */
-                --text-colour: black;
-            }
-
-            .silver-black {
-                /* The main colour */
-                --case: #c6c6c6;
-                /* The frame around the screen */
-                --bezel: #292a2c;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
-                /* The colour of the text (mostly in the bezel) */
-                --text-colour: #cccccc;
-            }
-
-            .transparent {
-                /* The main colour */
-                --case: rgba(0, 0, 0, 0.25);
-                /* The frame around the screen */
-                --bezel: #292a2c;
-                /* The colour of the D-Pad */
-                --dpad: #292a2c;
-                /* The A and B button colours */
-                --buttons: #292a2c;
-                /* The start and select button colours */
-                --start-select-buttons: #292a2c;
-            }
-
-            .pink {
-                /* The main colour */
-                --case: #fd9dad;
-                /* The frame around the screen */
-                --bezel: #292a2c;
-                /* The colour of the D-Pad */
-                --dpad: #464646;
-                /* The A and B button colours */
-                --buttons: #464646;
-                /* The start and select button colours */
-                --start-select-buttons: #464646;
-            }
-
-            .always-on {
-                /* The main colour */
-                --case: transparent;
-                /* The frame around the screen */
-                --bezel: transparent;
-                /* The colour of the D-Pad */
-                --dpad: rgba(255, 255, 255, 0.5);
-                /* The A and B button colours */
-                --buttons: rgba(255, 255, 255, 0.5);
-                /* The start and select button colours */
-                --start-select-buttons: rgba(255, 255, 255, 0.5);
-                /* The screen colour */
-                --screen: transparent;
-                /* The first line at the top */
-                --top-line-1: transparent;
-                /* The second line at the top */
-                --top-line-2: transparent;
-                /* The dot where the battery indicator is */
-                --battery-indicator-colour: transparent;
-                /* The colour of both "BATTERY" and the "DOT MATRIX" text */
-                --text-colour: transparent;
-            }
-
-            .pocket-text {
-                font-style: italic;
-            }
         }
     </style>
 
     <!-- Variants: 
 
-        grey
-        yellow
-        red
-        green
-        black
-        blue
-        white
-        gold
-        silver
-        silver-black 
-        transparent
-        pink
-        always-on
+        Case:
+        gb, gbp, gbl, gbc, gba, gba-sp
+
+        Colour:
+        grey, red, green, black, blue, white, gold, silver, 
+        silver-black, pink, berry, indigo, kiwi, yellow, teal, 
+        spice-orange, pokemon, ripcurl, famicom, famicom-gold, 
+        transparent, transparent-yellow, always-on
 
      -->
-    <g class="gbp grey round">
 
-        <!-- This just groups the elements together to make the code easier to read -->
-        <g id="round" mask="url(#circularBoundary)" class="round">
-            <!-- Make the main circle-->
-            <circle id="body" r="50%" height="100%" cx="50%" cy="50%" fill="transparent" />
+    <!-- Set your colour variant here -->
+    <g class="grey">
+        <!-- Then set your shape and model here -->
+        <g class="gb round">
+            <!-- This is the round watch face -->
+            <g id="round" mask="url(#circularBoundary)" class="round">
+                <!-- Make the main circle. A mask is applied (in CSS) -->
+                <circle id="body" r="50%" height="100%" cx="50%" cy="50%" fill="transparent" />
 
-            <!-- Make a path for the inside of the circle -->
-            <path d="M 595 200 A 1 1 0 0 0 45 441 L 594 441 C 620 380 620 330 610 260 Z"
-                style="stroke: var(--bezel); stroke-width: 40" fill="transparent" filter="url(#bezelDropShadow)" />
+                <!-- Make a path where the screen sits -->
+                <path id="bezel-round" d="M 595 200 A 1 1 0 0 0 45 441 L 594 441 C 620 380 620 330 610 260 Z"
+                    style="stroke: var(--bezel); stroke-width: 40" fill="transparent" filter="url(#bezelDropShadow)"
+                    mask="url(#batteryMaskRound)" />
 
-            <!-- Now we add the bottom part of the case-->
-            <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" id="case" />
+                <!-- Now we add the case section -->
+                <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" id="case" />
 
-            <!-- Now we add the battery indicator and curved text -->
-            <g id="battery-indicator">
-                <circle style="fill: var(--battery-indicator-colour)" r="1.5%" cx="3.125%" cy="50%"
-                    id="battery-circle" />
-                <text style="fill: var(--text-colour)" font-size="0.55em" text-anchor="middle" id="battery-text">
-                    <textPath href="#batteryTextCurve" startOffset="50%" class="gbp">
-                        POWER
-                    </textPath>
-
-                    <textPath href="#batteryTextCurve" startOffset="50%" class="gbl">
-                        POWER
-                    </textPath>
-
-                    <textPath href="#batteryTextCurve" startOffset="50%" class="dmg">
-                        BATTERY
-                    </textPath>
-                </text>
-            </g>
-
-            <g id="buttons" filter="url(#button-drop-shadow)">
-                <path style="stroke: black; fill: var(--dpad); stroke-width: 0.5%"
-                    d="m 160 485 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" id="dpad" />
-                <g id="a-b-buttons">
-                    <circle cx="79%" cy="80%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
-                        id="a-button" />
-                    <circle cx="68%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black" stroke-width="0.5%"
-                        id="b-button" />
-                </g>
-
-                <g id="start-select-buttons">
-                    <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="18%" y="100%" ry="1%"
-                        transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="start-button" />
-                    <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="8%" y="97%" ry="1%"
-                        transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="select-button" />
-                </g>
-            </g>
-            <g class="dmg">
-                <g id="admss-lines" style="mask: url(#linesMask) !important;">
-                    <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
-                        d="M 45 180 a 320 340 180 0 1 550 0" id="dmss-line-1" />
-                    <path style="stroke: var(--top-line-2); fill: none" stroke-width="1%"
-                        d="M 57 180 a 320 360 180 0 1 525 0" id="dmss-line-2" />
-                </g>
-                <text style="fill: var(--text-colour)" text-anchor="middle" id="dmss-text">
-                    <textPath font-size="1.25em" href="#linesPath" startOffset="50%">
-                        DOT MATRIX WITH STEREO SOUND
-                    </textPath>
-                </text>
-            </g>
-        </g>
-
-        <g id="square" class="square">
-            <g id="square-face">
-                <!-- Make the bezel -->
-                <rect x="3.125%" y="3.125%" width="93.75%" height="65.75%" fill="transparent"
-                    style="stroke: var(--bezel)" stroke-width="6.25%" />
-                <!-- Now we add the bottom part of the case-->
-                <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" />
-
-                <!-- Now we add the battery indicator and curved text -->
+                <!-- Now we add the battery indicator text -->
                 <g id="battery-indicator">
-                    <circle style="fill: var(--battery-indicator-colour)" r="1.5%" cx="3.125%" cy="25%" />
-                    <text style="fill: var(--text-colour)" font-size="0.55em" text-anchor="middle"
-                        transform="translate(0, -160)">
-                        <textPath href="#batteryTextCurve" startOffset="50%" class="gbp">
-                            POWER
-                        </textPath>
-                        <textPath href="#batteryTextCurve" startOffset="50%" class="gbl">
-                            POWER
-                        </textPath>
-                        <textPath href="#batteryTextCurve" startOffset="50%" class="dmg">
+                    <text style="fill: var(--primary-text-colour)" font-size="0.55em" text-anchor="middle"
+                        id="battery-text">
+                        <!-- This applies to the Game Boy (which is the only model that says "Battery") -->
+                        <textPath href="#batteryTextCurve" startOffset="50%"
+                            class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
                             BATTERY
+                        </textPath>
+                        <!-- This one applies to everything else -->
+                        <textPath href="#batteryTextCurve" startOffset="50%" class="hide-gb hide-gba hide-gba-sp">
+                            POWER
                         </textPath>
                     </text>
                 </g>
 
+                <!-- All of the buttons (A, B, D-Pad, Start, Select, Backlight etc. -->
                 <g id="buttons" filter="url(#button-drop-shadow)">
-                    <g id="dpad" stroke="black" stroke-width="0.5%">
-                        <path style="stroke: black; fill: var(--dpad)"
-                            d="m 70 515 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" />
-                    </g>
+
+                    <!-- This is the D-Pad. It's a shape because if we stroke two rectangles there's a line in the middle -->
+                    <path style="stroke: black; fill: var(--d-pad); stroke-width: 0.5%"
+                        d="m 160 485 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" id="dpad" />
+                    <!-- A and B buttons -->
                     <g id="a-b-buttons">
-                        <circle cx="89%" cy="85%" r="4%" style="fill: var(--buttons)" stroke="black"
-                            stroke-width="0.5%" />
-                        <circle cx="78%" cy="90%" r="4%" style="fill: var(--buttons)" stroke="black"
-                            stroke-width="0.5%" />
+                        <circle cx="79%" cy="80%" r="4%" style="fill: var(--a-button)" stroke="black"
+                            stroke-width="0.5%" id="a-button" />
+                        <circle cx="68%" cy="85%" r="4%" style="fill: var(--b-button)" stroke="black"
+                            stroke-width="0.5%" id="b-button" />
                     </g>
 
                     <g id="start-select-buttons">
-                        <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="14%" y="105%"
-                            ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
-                        <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="4%" y="102%" ry="1%"
-                            transform="rotate(-20)" stroke="black" stroke-width="0.5%" />
+                        <!-- Rectangular Start and Select Buttons -->
+                        <g class="hide-gba hide-gba-sp">
+                            <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="15%" y="104%"
+                                ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="start-button" />
+                            <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="5%" y="101%"
+                                ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="select-button" />
+                        </g>
+
+                        <!-- Circular Start and Select Buttons (GBA only) -->
+                        <g class="hide-gb hide-gbp hide-gbl hide-gbc">
+                            <circle cx="44%" cy="93%" r="2%" style="fill: var(--start-select-buttons)" stroke="black"
+                                stroke-width="0.5%" id="select-button" />
+                            <circle cx="56%" cy="93%" r="2%" style="fill: var(--start-select-buttons)" stroke="black"
+                                stroke-width="0.5%" id="start-button" />
+                        </g>
+
+                        <!-- Backlight button (GBA SP only) -->
+                        <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba">
+                            <circle cx="50%" cy="76%" r="1.8%" style="fill: var(--backlight-button)" stroke="black"
+                                stroke-width="0.5%" id="backlight-button" />
+                        </g>
                     </g>
                 </g>
-                <g class="dmg">
-                    <g id="dmss-lines" mask="url(#linesMaskSquare)">
-                        <rect x="7.5%" y="10" width="85%" height="1%" style="fill: var(--top-line-1)" />
-                        <rect x="7.5%" y="20" width="85%" height="1%" style="fill: var(--top-line-2)" />
+                <!-- The "Dot Matrix With Stereo Sound" text and lines -->
+                <g class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
+                    <g id="dmss-lines" style="mask: url(#linesMaskRound) !important;">
+                        <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
+                            d="M 45 180 a 320 340 180 0 1 550 0" id="dmss-line-1" />
+                        <path style="stroke: var(--top-line-2); fill: none" stroke-width="1%"
+                            d="M 57 180 a 320 360 180 0 1 525 0" id="dmss-line-2" />
                     </g>
-                    <text style="fill: var(--text-colour)" text-anchor="middle" x="50%" y="24">
-                        DOT MATRIX WITH STEREO SOUND
+                    <text class="bezel-text-1" style="fill: var(--primary-text-colour)" text-anchor="middle"
+                        id="dmss-text">
+                        <textPath font-size="1.25em" href="#linesPath" startOffset="50%">
+                            DOT MATRIX WITH STEREO SOUND
+                        </textPath>
                     </text>
                 </g>
             </g>
-        </g>
 
+            <!-- The square watch face -->
+            <g id="square" class="square">
+                <g id="square-face">
+                    <!-- Make the bezel. We apply a thick stroke to a rectangle so we don't have to worry about masks -->
+                    <rect x="3.125%" y="3.125%" width="93.75%" height="65.75%" fill="transparent"
+                        style="stroke: var(--bezel)" stroke-width="6.25%" id="bezel-square"
+                        mask="url(#batteryMaskSquare)" />
+                    <!-- Now we add the case-->
+                    <rect y="72%" x="0%" height="28%" width="100%" style="fill: var(--case)" id="case" />
 
-        <g id="texts">
+                    <!-- Now we add the battery indicator text. We've got more room here, so we don't curve the text -->
+                    <g id="battery-indicator">
+                        <text style="fill: var(--primary-text-colour)" font-size="0.55em" x="1%" y="28%"
+                        class="hide-gba hide-gba-sp hide-gbc hide-gbl hide-gbp">
+                        BATTERY
+                        </text>
+                        <text style="fill: var(--primary-text-colour)" font-size="0.55em" x="1%" y="28%"
+                            class="hide-gb hide-gba hide-gba-sp">
+                            POWER
+                        </text>
+                    </g>
 
-            <!-- The "Game Boy Pocket" text -->
-            <g class="gbp">
-                <g id="pocket-rectangle">
-                    <rect id="pocket-text-rectangle" x="41%" y="67.25%" style="fill: var(--text-colour)" width="7.5%"
-                        height="3.25%" />
-                    <text font-size="1.4em" x="40.75%"
-                        style="font-weight: lighter; fill: var(--secondary-text-colour); font-style: italic;" y="70%">wrist</text>
+                    <g id="buttons" filter="url(#button-drop-shadow)">
+                        <g id="dpad" stroke="black" stroke-width="0.5%">
+                            <path style="stroke: black; fill: var(--d-pad)"
+                                d="m 70 515 v 30 h -30 v 30 h 30 v 30 h 30 v -30 h 30 v -30 h -30 v -30 z" />
+                        </g>
+                        <g id="a-b-buttons">
+                            <circle cx="89%" cy="85%" r="4%" style="fill: var(--a-button)" stroke="black"
+                                stroke-width="0.5%" id="a-button" />
+                            <circle cx="78%" cy="90%" r="4%" style="fill: var(--b-button)" stroke="black"
+                                stroke-width="0.5%" id="b-button" />
+                        </g>
+
+                        <g id="start-select-buttons">
+                            <g class="hide-gba hide-gba-sp">
+                                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="14%"
+                                    y="105%" ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%"
+                                    id="a-button" />
+                                <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="4%" y="102%"
+                                    ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="b-button" />
+                            </g>
+                            <g class="hide-gb hide-gbp hide-gbl hide-gbc">
+                                <circle cx="43%" cy="93%" r="2%" style="fill: var(--start-select-buttons)"
+                                    stroke="black" stroke-width="0.5%" id="select-button" />
+                                <circle cx="57%" cy="93%" r="2%" style="fill: var(--start-select-buttons)"
+                                    stroke="black" stroke-width="0.5%" id="start-button" />
+                            </g>
+
+                            <!-- Backlight adjustment button (GBA SP only) -->
+                            <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba">
+                                <circle cx="50%" cy="76%" r="1.8%" style="fill: var(--backlight-button)" stroke="black"
+                                    stroke-width="0.5%" id="backlight-button" />
+                            </g>
+                        </g>
+                    </g>
+                    <g class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
+                        <g id="dmss-lines" mask="url(#linesMaskSquare)">
+                            <rect x="7.5%" y="10" width="85%" height="1%" style="fill: var(--top-line-1)" />
+                            <rect x="7.5%" y="20" width="85%" height="1%" style="fill: var(--top-line-2)" />
+                        </g>
+                        <text class="bezel-text-1" style="fill: var(--primary-text-colour)" text-anchor="middle" x="50%"
+                            y="24">
+                            DOT MATRIX WITH STEREO SOUND
+                        </text>
+                    </g>
                 </g>
-                <text x="10%" y="70.25%" style="fill: var(--text-colour)" font-size="1.6em">BOY AND
-                    WATCH</text>
             </g>
 
-            <!-- The "Game Boy Light" text -->
-            <g class="gbl">
-                <text x="10%" y="70%" style="fill: var(--text-colour); font-weight: 100" font-size="1.6em">BOY AND
-                    WATCH</text>
-                <text x="41%" y="70%" style="fill: var(--secondary-text-colour); font-weight: bolder"
-                    font-size="1.6em">LIGHT</text>
+            <!-- The bezel text. It's the same between round and square, so we put it here -->
+            <g id="texts">
+
+                <!-- The "Game Boy Pocket" text -->
+                <g class="hide-gb hide-gbl hide-gbc hide-gba hide-gba-sp">
+                    <g id="pocket-rectangle">
+                        <rect id="pocket-text-rectangle" x="41%" y="67.25%" style="fill: var(--secondary-text-colour)"
+                            width="7.5%" height="3.25%" />
+                        <text class="bezel-text-2" font-size="1.4em" x="40.75%"
+                            style="font-weight: lighter; fill: var(--tertiary-text-colour); font-style: italic;"
+                            y="70%">wrist</text>
+                    </g>
+                    <text class="bezel-text-1" x="10%" y="70%" style="fill: var(--primary-text-colour)"
+                        font-size="1.6em">BOY AND
+                        WATCH</text>
+                </g>
+
+                <!-- The "Game Boy Light" text -->
+                <g class="hide-gb hide-gbp hide-gbc hide-gba hide-gba-sp">
+                    <text class="bezel-text-1" x="10%" y="70%" style="fill: var(--primary-text-colour)"
+                        font-size="1.6em">BOY AND
+                        WATCH</text>
+                    <text class="bezel-text-2" x="41%" y="70%"
+                        style="fill: var(--secondary-text-colour); font-weight: bolder" font-size="1.6em">LIGHT</text>
+                </g>
+
+                <!-- The "Game Boy Color" text -->
+                <g class="hide-gb hide-gbl hide-gbp hide-gba hide-gba-sp">
+                    <text class="bezel-text-1" x="24%" y="70%"
+                        style="fill: var(--primary-text-colour); font-weight: bold" font-size="1.6em">BOY AND
+                        WATCH</text>
+                    <text class="bezel-text-2" x="57%" y="70%"
+                        style="fill: var(--secondary-text-colour); font-weight: bolder" font-size="1.6em">
+                        <!-- The text spacing gets weird when you use tspans, so we adjust it manually -->
+                        <tspan dx="-8" style="fill: var(--berry);">C</tspan>
+                        <tspan dx="-8" style="fill: var(--indigo);">O</tspan>
+                        <tspan dx="-8" style="fill: var(--kiwi);">L</tspan>
+                        <tspan dx="-8" style="fill: var(--yellow);">O</tspan>
+                        <tspan dx="-8" style="fill: var(--teal);">R</tspan>
+                    </text>
+                </g>
+
+                <!-- The Game Boy Advance text -->
+                <g class="hide-gb hide-gbl hide-gbc hide-gbp hide-gba-sp">
+                    <text class="bezel-text-1" x="23%" y="70%"
+                        style="fill: var(--primary-text-colour); font-weight: 100" font-size="1.6em">BOY AND
+                        WATCH</text>
+                    <text class="bezel-text-2" x="54%" y="69.75%" style="fill: var(--secondary-text-colour);"
+                        font-size="1.1em">
+                        <tspan dx="0px">A</tspan>
+                        <tspan dx="-4px">D</tspan>
+                        <tspan dx="-4px">V</tspan>
+                        <tspan dx="-6px">A</tspan>
+                        <tspan dx="-4px">N</tspan>
+                        <tspan dx="-4px">C</tspan>
+                        <tspan dx="-4px">E</tspan>
+                    </text>
+                </g>
+
+                <!-- The Game Boy Advance SP text -->
+                <g class="hide-gb hide-gbl hide-gbc hide-gbp hide-gba">
+                    <text class="bezel-text-1" x="19%" y="70%"
+                        style="fill: var(--primary-text-colour); font-weight: 100" font-size="1.6em">BOY AND
+                        WATCH</text>
+                    <text class="bezel-text-2" x="50%" y="69.75%" style="fill: var(--secondary-text-colour);"
+                        font-size="1.1em">
+                        <!-- The font being used for the ADVANCE text has weird per-letter spacing which we need to correct -->
+                        <tspan dx="-0px">A</tspan>
+                        <tspan dx="-4px">D</tspan>
+                        <tspan dx="-4px">V</tspan>
+                        <tspan dx="-6px">A</tspan>
+                        <tspan dx="-4px">N</tspan>
+                        <tspan dx="-4px">C</tspan>
+                        <tspan dx="-4px">E</tspan>
+                    </text>
+                    <text class="bezel-text-3" x="76%" y="70%" style="fill: var(--secondary-text-colour);"
+                        font-size="1.5em">
+                        SP
+                    </text>
+                </g>
             </g>
         </g>
     </g>
