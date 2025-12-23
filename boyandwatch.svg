@@ -136,7 +136,8 @@
         .gbl .hide-gbl,
         .gbc .hide-gbc,
         .gba .hide-gba,
-        .gba-sp .hide-gba-sp {
+        .gba-sp .hide-gba-sp,
+        .gbm .hide-gbm {
             visibility: hidden;
         }
 
@@ -187,49 +188,56 @@
         }
 
         /* The GBA and GBA-SP don't have battery indicators in the usual spot (it's on the case) so we hide it and show a special indicator */
-        .round {
-            .gba {
-                #case {
-                    mask: url(#gbaBatteryMaskRound);
-                }
-
-                #bezel-round {
-                    mask: none !important;
-                }
+        .gba>.round {
+            #case {
+                mask: url(#gbaBatteryMaskRound);
             }
 
-            .gba-sp {
-                #case {
-                    mask: url(#gbaSPBatteryMaskRound);
-                }
-
-                #bezel-round {
-                    mask: none !important;
-                }
+            #bezel-round {
+                mask: none !important;
             }
         }
 
-        .square {
-            .gba {
-                #case {
-                    mask: url(#gbaBatteryMaskSquare);
-                }
-
-                #bezel-square {
-                    mask: none !important;
-                }
+        .gba-sp>.round {
+            #case {
+                mask: url(#gbaSPBatteryMaskRound);
             }
 
-            .gba-sp {
-                #case {
-                    mask: url(#gbaSPBatteryMaskSquare);
-                }
-
-                #bezel-square {
-                    mask: none !important;
-                }
+            #bezel-round {
+                mask: none !important;
             }
         }
+
+        .gbm {
+
+            #bezel-round,
+            #bezel-square {
+                mask: none;
+                 !important;
+            }
+        }
+
+
+        .square>.gba {
+            #case {
+                mask: url(#gbaBatteryMaskSquare);
+            }
+
+            #bezel-square {
+                mask: none !important;
+            }
+        }
+
+        .square>.gba-sp {
+            #case {
+                mask: url(#gbaSPBatteryMaskSquare);
+            }
+
+            #bezel-square {
+                mask: none !important;
+            }
+        }
+
 
         /* These are used to split the design up for an app like Watch Face Studio */
         .bezel-only {
@@ -260,6 +268,7 @@
             --yellow: #d8cd18;
             --teal: #007092;
 
+            --black: #2a2a2a;
             --dark-grey: #464646;
             --grey: #8b8593;
             --light-grey: #e0d6d2;
@@ -271,12 +280,40 @@
             --gold: #b09750;
             --fluorescent: #29ffad;
 
+            /* The battery indicator font is the same across all variants that have it */
             #battery-indicator {
                 font-family: "Futura PT";
             }
 
+            /* The Game Boy Light almost always has this fluorescent colour */
             .gbl {
                 --secondary-text-colour: var(--fluorescent);
+            }
+
+            /* The GBA variants only really differ by shell colour and sometimes decals */
+            .gba {
+                --d-pad: var(--grey);
+                --a-button: var(--grey);
+                --b-button: var(--grey);
+                --start-select-buttons: var(--grey);
+            }
+
+            .gbm {
+                --bezel: var(--case);
+                --d-pad: var(--black);
+                --a-button: var(--black);
+                --b-button: var(--black);
+                --d-pad: var(--black);
+                --start-select-buttons: var(--silver);
+                #bezel-round, #bezel-square {
+                    filter: none;
+                }
+            }
+
+            /* The GBA and SP share a similar bezel colour */
+            .gba,
+            .gba-sp {
+                --bezel: var(--black);
             }
 
             /* The frame around the screen */
@@ -295,6 +332,8 @@
             --top-line-1: var(--purple);
             --top-line-2: var(--dark-blue);
 
+            --speaker-hole: var(--black);
+
             /* The main text colour */
             --primary-text-colour: white;
             /* The secondary text colour (e.g. in the Light text for the Game Boy Light */
@@ -312,7 +351,7 @@
             --d-pad: var(--dark-grey);
             --bezel: var(--grey);
 
-            /* The Game Boy Pocket has a different bezel */
+            /* The Game Boy Pocket has different bezel text colour */
             .gbp {
                 --primary-text-colour: var(--dark-blue);
                 --secondary-text-colour: var(--dark-blue);
@@ -332,7 +371,7 @@
 
         /* Lighter than black, darker than dark grey */
         .black {
-            --case: #282a29;
+            --case: var(--black);
         }
 
         /* Different from Teal */
@@ -431,6 +470,12 @@
                 --start-select-buttons: var(--berry);
                 --backlight-button: var(--berry);
             }
+
+            .gba {
+                --case: var(--gold);
+                --primary-text-colour: var(--gold);
+                --secondary-text-colour: var(--gold);
+            }
         }
 
         /* Same deal as the Pokemon one. It's silver, but with bright red buttons */
@@ -472,6 +517,17 @@
                     stroke: var(--gold);
                 }
             }
+        }
+
+        .ozzie {
+            --case: rgba(0, 255, 0, 0.25);
+            --bezel: var(--black);
+            --d-pad: #d38e3d;
+            --a-button: #d38e3d;
+            --b-button: #d38e3d;
+            --start-select-buttons: var(--dark-grey);
+            --primary-text-colour: white;
+            --secondary-text-colour: white;
         }
 
         /* The case is semi-transparent, so you can put your own motherboard image behind it */
@@ -528,19 +584,19 @@
     <!-- Variants: 
 
         Case:
-        gb, gbp, gbl, gbc, gba, gba-sp
+        gb, gbp, gbl, gbc, gba, gba-sp, gbm
 
         Colour:
         grey, red, green, black, blue, white, gold, silver, 
         silver-black, pink, berry, indigo, kiwi, yellow, teal, 
         spice-orange, pokemon, ripcurl, famicom, famicom-gold, 
-        transparent, transparent-yellow, always-on
+        ozzie, transparent, transparent-yellow, always-on
 
      -->
 
     <!-- Set your colour variant here -->
     <g class="grey">
-        <!-- Then set your shape and model here -->
+        <!-- Then set your model and shape here -->
         <g class="gb round">
             <!-- This is the round watch face -->
             <g id="round" mask="url(#circularBoundary)" class="round">
@@ -561,11 +617,12 @@
                         id="battery-text">
                         <!-- This applies to the Game Boy (which is the only model that says "Battery") -->
                         <textPath href="#batteryTextCurve" startOffset="50%"
-                            class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
+                            class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp hide-gbm">
                             BATTERY
                         </textPath>
                         <!-- This one applies to everything else -->
-                        <textPath href="#batteryTextCurve" startOffset="50%" class="hide-gb hide-gba hide-gba-sp">
+                        <textPath href="#batteryTextCurve" startOffset="50%"
+                            class="hide-gb hide-gba hide-gba-sp hide-gbm">
                             POWER
                         </textPath>
                     </text>
@@ -587,30 +644,77 @@
 
                     <g id="start-select-buttons">
                         <!-- Rectangular Start and Select Buttons -->
-                        <g class="hide-gba hide-gba-sp">
+                        <g class="hide-gba hide-gba-sp hide-gbm">
                             <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="15%" y="104%"
                                 ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="start-button" />
                             <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="5%" y="101%"
                                 ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%" id="select-button" />
                         </g>
 
-                        <!-- Circular Start and Select Buttons (GBA only) -->
-                        <g class="hide-gb hide-gbp hide-gbl hide-gbc">
+                        <!-- Rectangular Start and Select Buttons for the Game Boy Micro -->
+                        <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
+                            <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="38%" y="93%"
+                                stroke="black" stroke-width="0.5%" id="start-button" />
+                            <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="52%" y="93%"
+                                stroke="black" stroke-width="0.5%" id="select-button" />
+                        </g>
+
+                        <!-- Horizontally oriented, circular Start and Select Buttons (GBA-SP only) -->
+                        <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba hide-gbm">
                             <circle cx="44%" cy="93%" r="2%" style="fill: var(--start-select-buttons)" stroke="black"
                                 stroke-width="0.5%" id="select-button" />
                             <circle cx="56%" cy="93%" r="2%" style="fill: var(--start-select-buttons)" stroke="black"
                                 stroke-width="0.5%" id="start-button" />
                         </g>
 
+                        <!-- Vertically oriented, circular Start and Select Buttons (GBA only) -->
+                        <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba-sp hide-gbm">
+                            <circle cx="42%" cy="94%" r="2%" style="fill: var(--start-select-buttons)" stroke="black"
+                                stroke-width="0.5%" id="select-button" />
+                            <circle cx="42%" cy="88%" r="2%" style="fill: var(--start-select-buttons)" stroke="black"
+                                stroke-width="0.5%" id="start-button" />
+                        </g>
+
                         <!-- Backlight button (GBA SP only) -->
-                        <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba">
+                        <g class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba hide-gbm">
                             <circle cx="50%" cy="76%" r="1.8%" style="fill: var(--backlight-button)" stroke="black"
                                 stroke-width="0.5%" id="backlight-button" />
                         </g>
+
                     </g>
                 </g>
+
+                <g id="speaker">
+                    <g id="gba-sp-speaker" class="hide-gb hide-gbp hide-gbl hide-gbc hide-gba hide-gbm">
+                        <g id="speaker-row-1">
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="47%" cy="82%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="49%" cy="82%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="51%" cy="82%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="53%" cy="82%" r="0.4%" />
+                        </g>
+                        <g id="speaker-row-2">
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="47%" cy="84%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole)" cx="49%" cy="84%" r="0.5%" />
+                            <circle style="fill: var(--speaker-hole)" cx="51%" cy="84%" r="0.5%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="53%" cy="84%" r="0.4%" />
+                        </g>
+                        <g id="speaker-row-3">
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="47%" cy="86%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole)" cx="49%" cy="86%" r="0.5%" />
+                            <circle style="fill: var(--speaker-hole)" cx="51%" cy="86%" r="0.5%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="53%" cy="86%" r="0.4%" />
+                        </g>
+                        <g id="speaker-row-4">
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="47%" cy="88%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="49%" cy="88%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="51%" cy="88%" r="0.4%" />
+                            <circle style="fill: var(--speaker-hole); opacity: 0.75" cx="53%" cy="88%" r="0.4%" />
+                        </g>
+                    </g>
+                </g>
+
                 <!-- The "Dot Matrix With Stereo Sound" text and lines -->
-                <g class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
+                <g class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp hide-gbm">
                     <g id="dmss-lines" style="mask: url(#linesMaskRound) !important;">
                         <path style="stroke: var(--top-line-1); fill: none" stroke-width="1%"
                             d="M 45 180 a 320 340 180 0 1 550 0" id="dmss-line-1" />
@@ -639,11 +743,11 @@
                     <!-- Now we add the battery indicator text. We've got more room here, so we don't curve the text -->
                     <g id="battery-indicator">
                         <text style="fill: var(--primary-text-colour)" font-size="0.55em" x="1%" y="28%"
-                        class="hide-gba hide-gba-sp hide-gbc hide-gbl hide-gbp">
-                        BATTERY
+                            class="hide-gba hide-gba-sp hide-gbc hide-gbl hide-gbp hide-gbm">
+                            BATTERY
                         </text>
                         <text style="fill: var(--primary-text-colour)" font-size="0.55em" x="1%" y="28%"
-                            class="hide-gb hide-gba hide-gba-sp">
+                            class="hide-gb hide-gba hide-gba-sp hide-gbm">
                             POWER
                         </text>
                     </g>
@@ -661,7 +765,7 @@
                         </g>
 
                         <g id="start-select-buttons">
-                            <g class="hide-gba hide-gba-sp">
+                            <g class="hide-gba hide-gba-sp hide-gbm">
                                 <rect width="8%" height="2.5%" style="fill: var(--start-select-buttons)" x="14%"
                                     y="105%" ry="1%" transform="rotate(-20)" stroke="black" stroke-width="0.5%"
                                     id="a-button" />
@@ -682,7 +786,7 @@
                             </g>
                         </g>
                     </g>
-                    <g class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp">
+                    <g class="hide-gbp hide-gbl hide-gbc hide-gba hide-gba-sp hide-gbm">
                         <g id="dmss-lines" mask="url(#linesMaskSquare)">
                             <rect x="7.5%" y="10" width="85%" height="1%" style="fill: var(--top-line-1)" />
                             <rect x="7.5%" y="20" width="85%" height="1%" style="fill: var(--top-line-2)" />
@@ -699,7 +803,7 @@
             <g id="texts">
 
                 <!-- The "Game Boy Pocket" text -->
-                <g class="hide-gb hide-gbl hide-gbc hide-gba hide-gba-sp">
+                <g class="hide-gb hide-gbl hide-gbc hide-gba hide-gba-sp hide-gbm">
                     <g id="pocket-rectangle">
                         <rect id="pocket-text-rectangle" x="41%" y="67.25%" style="fill: var(--secondary-text-colour)"
                             width="7.5%" height="3.25%" />
@@ -713,7 +817,7 @@
                 </g>
 
                 <!-- The "Game Boy Light" text -->
-                <g class="hide-gb hide-gbp hide-gbc hide-gba hide-gba-sp">
+                <g class="hide-gb hide-gbp hide-gbc hide-gba hide-gba-sp hide-gbm">
                     <text class="bezel-text-1" x="10%" y="70%" style="fill: var(--primary-text-colour)"
                         font-size="1.6em">BOY AND
                         WATCH</text>
@@ -722,7 +826,7 @@
                 </g>
 
                 <!-- The "Game Boy Color" text -->
-                <g class="hide-gb hide-gbl hide-gbp hide-gba hide-gba-sp">
+                <g class="hide-gb hide-gbl hide-gbp hide-gba hide-gba-sp hide-gbm">
                     <text class="bezel-text-1" x="24%" y="70%"
                         style="fill: var(--primary-text-colour); font-weight: bold" font-size="1.6em">BOY AND
                         WATCH</text>
@@ -738,7 +842,7 @@
                 </g>
 
                 <!-- The Game Boy Advance text -->
-                <g class="hide-gb hide-gbl hide-gbc hide-gbp hide-gba-sp">
+                <g class="hide-gb hide-gbl hide-gbc hide-gbp hide-gba-sp hide-gbm">
                     <text class="bezel-text-1" x="23%" y="70%"
                         style="fill: var(--primary-text-colour); font-weight: 100" font-size="1.6em">BOY AND
                         WATCH</text>
@@ -755,7 +859,7 @@
                 </g>
 
                 <!-- The Game Boy Advance SP text -->
-                <g class="hide-gb hide-gbl hide-gbc hide-gbp hide-gba">
+                <g class="hide-gb hide-gbl hide-gbc hide-gbp hide-gba hide-gbm">
                     <text class="bezel-text-1" x="19%" y="70%"
                         style="fill: var(--primary-text-colour); font-weight: 100" font-size="1.6em">BOY AND
                         WATCH</text>
