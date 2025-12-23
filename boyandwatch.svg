@@ -595,9 +595,9 @@
      -->
 
     <!-- Set your colour variant here -->
-    <g class="grey">
+    <g class="grey" id="colour-variation">
         <!-- Then set your model and shape here -->
-        <g class="gb round">
+        <g class="gb round" id="case-variation">
             <!-- This is the round watch face -->
             <g id="round" mask="url(#circularBoundary)" class="round">
                 <!-- Make the main circle. A mask is applied (in CSS) -->
